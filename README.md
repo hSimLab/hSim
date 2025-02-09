@@ -1,2 +1,3 @@
 # hSim
-CPU simulator model
+
+Hi there. We introduce high perfomance CPU simulator model.
