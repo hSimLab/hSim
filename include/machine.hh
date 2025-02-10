@@ -1,8 +1,12 @@
 #ifndef HSIM_MACHINE_INCLUDED
 #define HSIM_MACHINE_INCLUDED
 
+#include <memory>
+
 #include "config.hh"
+#include "cpu_state.hh"
 #include "elf_loader.hh"
+#include "executors.hh"
 #include "memory.hh"
 
 namespace hSim {
@@ -17,20 +21,23 @@ class Machine final {
         ElfLoader loader{config.elf_path};
 
         loader.load(m_mem);
-        // m_state.set_pc(loader.entry_point());
+        m_state =
+            std::make_unique<hSim::CpuState>(loader.entry_point(), &m_mem);
     }
 
+    void step() { execute(m_state.get(), 0, 0, 0); }
+
     void run() {
-        // while (!m_state.finished) {
-        //     step();
-        // }
+        while (!m_state->finished()) {
+            step();
+        }
     }
 
   private:
-    bool m_finished{false};
-
+    std::unique_ptr<hSim::CpuState> m_state;
     Memory m_mem{};
-    // CpuState m_state{nullptr};
+
+    bool m_finished{false};
 };
 
 } // namespace hSim
