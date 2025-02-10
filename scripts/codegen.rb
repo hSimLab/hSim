@@ -6,6 +6,7 @@ module CodeGenerator
         #ifndef HSIM_CPU_STATE_INCLUDED
         #define HSIM_CPU_STATE_INCLUDED
 
+        #include <array>
         #include <cstddef>
         #include <iostream>
 
