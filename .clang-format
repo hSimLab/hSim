@@ -2,8 +2,5 @@
 BasedOnStyle: LLVM
 IndentWidth: 4
 InsertNewlineAtEOF: true
-KeepEmptyLines:
-  AtEndOfFile: false
-  AtStartOfBlock: false
-  AtStartOfFile: false
+KeepEmptyLinesAtEOF: false
 ---
