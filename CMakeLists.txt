@@ -23,10 +23,9 @@ add_library(hSim-lib STATIC ${hSIM_LIB})
 
 target_include_directories(hSim-lib PUBLIC
     ${CMAKE_SOURCE_DIR}/include
-    ${hDSL_GENERATED_DIR}
 )
 
-target_link_libraries(hSim-lib PRIVATE elfio::elfio hDSL-lib)
+target_link_libraries(hSim-lib PUBLIC hDSL-lib PRIVATE elfio::elfio)
 
 add_executable(${PROJECT_NAME} src/main.cc)
 
