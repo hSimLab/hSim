@@ -13,17 +13,18 @@ jobs:
   check-format:
     name: Check code formatting
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        path: ['src', 'include']
     steps:
       - name: Checkout repo and submodules
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Install clang-format
-        run: sudo apt-get install -y clang-format
-
-      - name: Check code formatting
-        run: |
-          find . -regex '.*\.\(cpp\|hpp\|cc\|hh\|cxx\|h\)' -exec clang-format -style=file -i {} \;
-          git diff --exit-code
+      - name: Run clang-format style check for C/C++.
+        uses: jidicula/clang-format-action@v4.14.0
+        with:
+          clang-format-version: '19'
+          check-path: ${{ matrix.path }}
   build:
     # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
     # You can convert this to a matrix build if you need cross-platform coverage.
@@ -33,14 +34,14 @@ jobs:
     needs: check-format
     strategy:
       matrix:
-        os: [ubuntu-20.04, ubuntu-22.04]
+        os: [ubuntu-latest]
         compiler: [g++, clang++]
         generator: [Unix Makefiles, Ninja]
         build_type: [Debug, Release]
 
     steps:
       - name: Checkout repo and submodules
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Ninja
         if: ${{ matrix.generator == 'Ninja' }}
