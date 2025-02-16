@@ -36,8 +36,6 @@ class Machine final {
   private:
     std::unique_ptr<hSim::CpuState> m_state;
     Memory m_mem{};
-
-    bool m_finished{false};
 };
 
 } // namespace hSim

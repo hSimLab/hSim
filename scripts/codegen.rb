@@ -18,15 +18,20 @@ module CodeGenerator
           public:
             static constexpr std::size_t kNumRegisters = 32;
 
-            CpuState(Addr entry, Memory* mem) : m_pc(entry), m_mem(mem) {}
+            CpuState(Addr entry, Memory* mem) : m_mem(mem), m_pc(entry) {}
 
             Word get_pc() const { return m_pc; }
             bool finished() const { return m_finished; }
 
+            auto *get_mem() const { return m_mem; }
+
+            Word get_reg(std::size_t idx) const { return m_X[idx]; }
+            void set_reg(std::size_t idx, Word val) { m_X[idx] = val; }
+
           private:
-            std::array<uint32_t, kNumRegisters> m_X{};
+            std::array<Word, kNumRegisters> m_X{};
             Memory* m_mem{nullptr};
-            
+
             Word m_pc{};
             bool m_finished{false};
         };
@@ -43,7 +48,7 @@ module CodeGenerator
         #ifndef HSIM_EXECUTORS_INCLUDED
         #define HSIM_EXECUTORS_INCLUDED
 
-        
+
         namespace hSim {
           class CpuState;
 
