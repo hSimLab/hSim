@@ -7,7 +7,7 @@
 #include "machine.hh"
 
 int main(int argc, char **argv) try {
-    CLI::App app("hSim: high Perfomance CPU Simulator");
+    CLI::App app("hSim: high Performance CPU Simulator");
     hsim::Config config{};
 
     app.add_option("--elf", config.elf_path, "Path to ELF file")

@@ -1,6 +1,6 @@
 # hSim
 
-Hi there. We introduce high perfomance CPU simulator model.
+Hi there. We introduce high performance CPU simulator model.
 
 ## How to build
 ### Requirements
@@ -17,7 +17,5 @@ cmake --build <path_to_build> --parallel <amount_of_jobs>
 Ninja is optional, but it looks really pretty
 After build, you can run our simulator and get some help info
 ```bash
-./build/hSim --help
+./build/hsim --help
 ```
-
-
