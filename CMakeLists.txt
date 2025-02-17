@@ -6,11 +6,8 @@ include(cmake/CPM.cmake)
 # Provide default CXX settings
 include(cmake/defaults.cmake)
 
-set(SUBDIRS third_party scripts)
-
-foreach(DIR ${SUBDIRS})
-  add_subdirectory(${DIR})
-endforeach()
+add_subdirectory(third_party)
+add_subdirectory(scripts)
 
 set(hSIM_LIB
     src/memory.cc src/machine.cc
@@ -30,3 +27,4 @@ add_executable(${PROJECT_NAME} src/main.cc)
 
 target_compile_options(${PROJECT_NAME} PRIVATE -Wpedantic)
 target_link_libraries(${PROJECT_NAME} PRIVATE hSim-lib CLI11::CLI11 fmt::fmt)
+set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME hsim)
