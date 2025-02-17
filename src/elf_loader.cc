@@ -7,8 +7,9 @@ namespace hsim {
 void ElfLoader::load(Memory &memory) {
     ELFIO::elfio reader{};
 
-    if (!reader.load(m_path))
+    if (!reader.load(m_path)) {
         throw std::invalid_argument("Bad ELF path: " + m_path.string());
+    }
 
     if (reader.get_encoding() != ELFIO::ELFDATA2LSB) {
         throw std::runtime_error("Wrong ELF encoding");
