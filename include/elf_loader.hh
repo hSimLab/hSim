@@ -2,12 +2,11 @@
 #define HSIM_ELF_LOADER_INCLUDED
 
 #include <filesystem>
-#include <stdexcept>
 
 #include "memory.hh"
 #include "support.hh"
 
-namespace hSim {
+namespace hsim {
 
 /**
  * @brief Driver to load ELF files with little-endianness
@@ -15,16 +14,16 @@ namespace hSim {
  */
 struct ElfLoader final {
   public:
-    explicit ElfLoader(std::filesystem::path path) : m_path(path) {}
+    explicit ElfLoader(std::filesystem::path path) : m_path(std::move(path)) {}
     //
     void load(Memory &memory);
-    Addr entry_point() const { return m_entry_point; }
+    Addr entryPoint() const { return m_entryPoint; }
 
   private:
     std::filesystem::path m_path;
-    uint64_t m_entry_point{};
+    uint64_t m_entryPoint{};
 };
 
-} // namespace hSim
+} // namespace hsim
 
 #endif // HSIM_ELF_LOADER_INCLUDED

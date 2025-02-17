@@ -3,7 +3,7 @@
 
 #include <filesystem>
 
-namespace hSim {
+namespace hsim {
 
 /**
  * @brief Simulator config with/ different useful data
@@ -16,6 +16,6 @@ struct Config final {
     bool dump_exec{true};
 };
 
-} // namespace hSim
+} // namespace hsim
 
 #endif // HSIM_CONFIG_INCLUDED

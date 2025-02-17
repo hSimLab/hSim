@@ -3,13 +3,13 @@
 
 #include <cstdint>
 
-namespace hSim {
+namespace hsim {
 
 // Useful typedefs
 using Word = std::uint32_t;
 using Addr = std::uint32_t;
 using Byte = std::uint8_t;
 
-} // namespace hSim
+} // namespace hsim
 
 #endif // HSIM_SUPPORT_INCLUDED

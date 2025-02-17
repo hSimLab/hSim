@@ -2,7 +2,7 @@
 
 #include "elf_loader.hh"
 
-namespace hSim {
+namespace hsim {
 
 void ElfLoader::load(Memory &memory) {
     ELFIO::elfio reader{};
@@ -14,17 +14,17 @@ void ElfLoader::load(Memory &memory) {
         throw std::runtime_error("Wrong ELF encoding");
     }
 
-    m_entry_point = reader.get_entry();
+    m_entryPoint = reader.get_entry();
 
     for (const auto &segment : reader.segments) {
         if (segment->get_type() == ELFIO::PT_LOAD) {
-            const Addr phys_addr = segment->get_physical_address();
-            const std::size_t file_size = segment->get_file_size();
+            const Addr vaddr = segment->get_virtual_address();
+            const auto fileSize = segment->get_file_size();
 
-            memory.writeBlock(
-                phys_addr, reinterpret_cast<const Byte *>(segment->get_data()),
-                file_size);
+            memory.writeBlock(vaddr, {reinterpret_cast<const std::byte *>(
+                                          segment->get_data()),
+                                      fileSize});
         }
     }
 }
-} // namespace hSim
+} // namespace hsim

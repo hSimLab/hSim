@@ -13,29 +13,29 @@ module CodeGenerator
         #include "support.hh"
         #include "memory.hh"
 
-        namespace hSim {
+        namespace hsim {
         class CpuState final {
           public:
             static constexpr std::size_t kNumRegisters = 32;
 
             CpuState(Addr entry, Memory* mem) : m_mem(mem), m_pc(entry) {}
 
-            Word get_pc() const { return m_pc; }
+            Word getPC() const { return m_pc; }
             bool finished() const { return m_finished; }
 
-            auto *get_mem() const { return m_mem; }
+            auto *getMem() const { return m_mem; }
 
-            Word get_reg(std::size_t idx) const { return m_X[idx]; }
-            void set_reg(std::size_t idx, Word val) { m_X[idx] = val; }
+            Word getReg(std::size_t idx) const { return m_rfile[idx]; }
+            void setReg(std::size_t idx, Word val) { m_rfile[idx] = val; }
 
           private:
-            std::array<Word, kNumRegisters> m_X{};
+            std::array<Word, kNumRegisters> m_rfile{};
             Memory* m_mem{nullptr};
 
             Word m_pc{};
             bool m_finished{false};
         };
-        } // namespace hSim
+        } // namespace hsim
 
         #endif // HSIM_CPU_STATE_INCLUDED
       EXECUTOR
@@ -49,7 +49,7 @@ module CodeGenerator
         #define HSIM_EXECUTORS_INCLUDED
 
 
-        namespace hSim {
+        namespace hsim {
           class CpuState;
 
           void execute(CpuState* state, int rd, int rs1, int rs2);
@@ -64,8 +64,8 @@ module CodeGenerator
       f.puts <<~EXECUTOR
         #include "executors.hh"
 
-        namespace hSim {
-          void execute(CpuState *state, int rd, int rs1, int rs2) { return; }
+        namespace hsim {
+          void execute(CpuState *state, int rd, int rs1, int rs2) { }
         }
       EXECUTOR
     end
@@ -77,7 +77,7 @@ module CodeGenerator
         #ifndef HSIM_DECODER_INCLUDED
         #define HSIM_DECODER_INCLUDED
 
-        namespace hSim {}
+        namespace hsim {}
 
         #endif // HSIM_DECODER_INCLUDED
       DECODER

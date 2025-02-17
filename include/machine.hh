@@ -9,7 +9,7 @@
 #include "executors.hh"
 #include "memory.hh"
 
-namespace hSim {
+namespace hsim {
 
 /**
  * @brief Driver to inialize all state & run execution
@@ -21,8 +21,7 @@ class Machine final {
         ElfLoader loader{config.elf_path};
 
         loader.load(m_mem);
-        m_state =
-            std::make_unique<hSim::CpuState>(loader.entry_point(), &m_mem);
+        m_state = std::make_unique<CpuState>(loader.entryPoint(), &m_mem);
     }
 
     void step() { execute(m_state.get(), 0, 0, 0); }
@@ -34,10 +33,10 @@ class Machine final {
     }
 
   private:
-    std::unique_ptr<hSim::CpuState> m_state;
+    std::unique_ptr<CpuState> m_state;
     Memory m_mem{};
 };
 
-} // namespace hSim
+} // namespace hsim
 
 #endif // HSIM_MACHINE_INCLUDED

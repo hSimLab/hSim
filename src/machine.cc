@@ -1,3 +1,3 @@
 #include "machine.hh"
 
-namespace hSim {} // namespace hSim
+namespace hsim {} // namespace hsim

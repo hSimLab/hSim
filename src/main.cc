@@ -8,7 +8,7 @@
 
 int main(int argc, char **argv) try {
     CLI::App app("hSim: high Perfomance CPU Simulator");
-    hSim::Config config{};
+    hsim::Config config{};
 
     app.add_option("--elf", config.elf_path, "Path to ELF file")
         ->required()
@@ -28,7 +28,7 @@ int main(int argc, char **argv) try {
         return app.exit(e);
     }
     //
-    hSim::Machine machine{config};
+    hsim::Machine machine{config};
 
     machine.run();
 

@@ -1,18 +1,15 @@
+#include <algorithm>
 #include <cassert>
-#include <cstdint>
 #include <cstring>
 
 #include "memory.hh"
 
-namespace hSim {
-void Memory::readBlock(Addr addr, Byte *buf, std::size_t size) const {
-    assert(buf && "Invalid buffer pointer");
-    std::memcpy(buf, m_data.data() + addr, size);
+namespace hsim {
+void Memory::readBlock(Addr addr, std::span<std::byte> buffer) const {
+    std::memcpy(buffer.data(), m_data.data() + addr, buffer.size_bytes());
 }
 
-void Memory::writeBlock(Addr addr, const Byte *buf, std::size_t size) {
-    assert(buf && "Invalid buffer pointer");
-    std::memcpy(m_data.data() + addr, reinterpret_cast<const char *>(buf),
-                size);
+void Memory::writeBlock(Addr addr, std::span<const std::byte> buffer) {
+    std::memcpy(m_data.data() + addr, buffer.data(), buffer.size_bytes());
 }
-} // namespace hSim
+} // namespace hsim

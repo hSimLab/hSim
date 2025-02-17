@@ -1,12 +1,15 @@
 #ifndef HSIM_MEMORY_INCLUDED
 #define HSIM_MEMORY_INCLUDED
 
+#include <concepts>
+#include <cstring>
 #include <limits>
+#include <span>
 #include <vector>
 
 #include "support.hh"
 
-namespace hSim {
+namespace hsim {
 
 /**
  * @brief Naive implementation of byte-addressable memory
@@ -18,26 +21,23 @@ class Memory final {
 
     Memory() { m_data.resize(kMemSize); }
 
-    template <typename T> T read(Addr addr) const {
-        static_assert(std::is_integral<T>::value,
-                      "Error: Integral type required");
-        T value = *reinterpret_cast<const T *>(m_data.data() + addr);
+    template <std::integral T> T read(Addr addr) const {
+        T value;
+        std::memcpy(&value, m_data.data() + addr, sizeof(T));
         return value;
     }
 
-    template <typename T> void write(Addr addr, T value) {
-        static_assert(std::is_integral<T>::value,
-                      "Error: Integral type required");
-        *reinterpret_cast<T *>(m_data.data() + addr) = value;
+    void write(Addr addr, std::integral auto value) {
+        std::memcpy(m_data.data() + addr, &value, sizeof(value));
     }
 
-    void readBlock(Addr addr, Byte *buf, std::size_t size) const;
-    void writeBlock(Addr addr, const Byte *buf, std::size_t size);
+    void readBlock(Addr addr, std::span<std::byte> buffer) const;
+    void writeBlock(Addr addr, std::span<const std::byte> buffer);
 
   private:
     std::vector<Byte> m_data;
 };
 
-} // namespace hSim
+} // namespace hsim
 
 #endif // HSIM_MEMORY_INCLUDED
