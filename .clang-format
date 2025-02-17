@@ -1,4 +1,6 @@
 ---
 BasedOnStyle: LLVM
 IndentWidth: 4
+InsertNewlineAtEOF: true
+KeepEmptyLinesAtEOF: false
 ---

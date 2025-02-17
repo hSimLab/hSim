@@ -5,8 +5,7 @@ CompileFlags:
 
 Diagnostics:
   UnusedIncludes: Strict
-  Includes:
-    MissingIncludes: Strict
+  MissingIncludes: Strict
 
 Hover:
   ShowAKA: Yes
