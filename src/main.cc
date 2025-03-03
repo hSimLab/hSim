@@ -30,6 +30,8 @@ int main(int argc, char **argv) try {
     //
     hsim::Machine machine{config};
 
+    // machine.loadPlugin("./build/plugins/libsimple_plugin.so");
+
     machine.run();
 
     return 0;

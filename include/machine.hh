@@ -2,12 +2,14 @@
 #define HSIM_MACHINE_INCLUDED
 
 #include <memory>
+#include <string>
 
 #include "config.hh"
 #include "cpu_state.hh"
 #include "elf_loader.hh"
 #include "executors.hh"
 #include "memory.hh"
+#include "plugin_manager.hh"
 
 namespace hsim {
 
@@ -32,9 +34,15 @@ class Machine final {
         }
     }
 
+    void loadPlugin(const std::string &pluginPath,
+                    const std::string &options = "") {
+        m_plugins.loadPlugin(pluginPath, options);
+    }
+
   private:
     std::unique_ptr<CpuState> m_state;
     Memory m_mem{};
+    PluginManager m_plugins;
 };
 
 } // namespace hsim
