@@ -1,59 +1,83 @@
 #ifndef HSIM_PLUGIN_INCLUDED
 #define HSIM_PLUGIN_INCLUDED
 
-#include <stdexcept>
+#include <filesystem>
+#include <memory>
 #include <string>
+#include <utility>
 
 #include <dlfcn.h>
 
-#include "plugin_api.hh"
+#include "machine_event.hh"
+#include "so_loader.hh"
 
 namespace hsim {
 
-class Plugin final {
+class IPlugin : public IEventConsumer {
   public:
-    Plugin(const std::string &pluginPath, const std::string &options = "")
-        : m_pluginName{pluginPath}, m_options{options} {
-        m_dlhandle = dlopen(pluginPath.c_str(), RTLD_NOW);
-        if (m_dlhandle == nullptr) {
-            std::string dlErrorMsg = dlerror();
-            std::string fullErrorMsg = "Unable to load plugin: " + pluginPath +
-                                       ". Error: " + dlErrorMsg;
-            throw std::runtime_error(fullErrorMsg);
-        }
-
-        auto loadFunc = reinterpret_cast<LoadFunc>(
-            dlsym(m_dlhandle, kLoadFuncName.c_str()));
-        if (loadFunc == nullptr) {
-            std::string dlErrorMsg = dlerror();
-            std::string fullErrorMsg =
-                "Unable to load : " + pluginPath + ". Error: " + dlErrorMsg;
-            throw std::runtime_error(fullErrorMsg);
-        }
-
-        LoadablePlugin plugin = loadFunc(options.c_str());
-        m_pluginMem = plugin.pluginMem;
-        m_notify = plugin.notify;
-        m_unload = plugin.unload;
-    }
-
-    ~Plugin() {
-        m_unload(m_pluginMem);
-
-        dlclose(m_dlhandle);
-    }
-
-    void notify() { m_notify(m_pluginMem); }
+    IPlugin(SharedLib so_lib) : m_sharedLib(std::move(so_lib)) {}
+    ~IPlugin() override = default;
+    SharedLib getSOLib() { return m_sharedLib; }
 
   private:
-    std::string m_pluginName;
-    std::string m_options;
-
-    void *m_dlhandle;
-    void *m_pluginMem;
-    NotifyFunc m_notify;
-    UnloadFunc m_unload;
+    SharedLib m_sharedLib;
 };
+
+using LoadPLuginFunc = hsim::IPlugin *(*)(const char *options,
+                                          SharedLib so_lib);
+
+// using IPluginHandler = std::unique_ptr<IPlugin, void (*)(IPlugin*)>;
+// auto loadPluginFromSO(const std::filesystem::path& path, const std::string&
+// options) {
+//     SharedLib sharedLib{path, kLazy};
+//     auto loadPluginFunc = sharedLib.get<LoadPLuginFunc>("loadPlugin");
+//
+//     // NOTE reason for custom deleter:
+//     //      when ~IPlugin is called it first calls ~SharedLib and then
+//     ~SimplePlugin(wich is already unloaded) auto pluginDeleter = [lib =
+//     SharedLib{sharedLib}](IPlugin* plugin) mutable { delete plugin; };
+
+//     IPlugin* plugin = loadPluginFunc(options.c_str(), sharedLib);
+//     return std::unique_ptr<IPlugin, decltype(pluginDeleter)>{plugin,
+//     pluginDeleter};
+// }
+
+// // NOTE reason for custom deleter:
+// //      when ~IPlugin is called it first calls ~SharedLib and then
+// ~SimplePlugin(wich is already unloaded) void ipluginDeleter(IPlugin* plugin)
+// {
+//     SharedLib soLib = plugin->getSOLib();
+//     soLib.~SharedLib();
+// }
+
+// using IPluginHandler = std::unique_ptr<IPlugin, void (*)(IPlugin*)>;
+// IPluginHandler loadPluginFromSO(const std::filesystem::path& path, const
+// std::string& options) {
+//     SharedLib sharedLib{path, kLazy};
+//     auto loadPluginFunc = sharedLib.get<LoadPLuginFunc>("loadPlugin");
+//
+//     IPlugin* plugin = loadPluginFunc(options.c_str(), sharedLib);
+//     return IPluginHandler{plugin, ipluginDeleter};
+// }
+
+// using IPluginHandler = std::unique_ptr<IPlugin>;
+// IPluginHandler loadPluginFromSO(const std::filesystem::path& path, const
+// std::string& options) {
+//     SharedLib sharedLib{path, kLazy};
+//     auto loadPluginFunc = sharedLib.get<LoadPLuginFunc>("loadPlugin");
+//
+//     IPlugin* plugin = loadPluginFunc(options.c_str(), sharedLib);
+//     return IPluginHandler{plugin};
+// }
+
+using IPluginHandler = std::unique_ptr<IPlugin>;
+IPluginHandler loadPluginFromSO(SharedLib sharedLib,
+                                const std::string &options) {
+    auto loadPluginFunc = sharedLib.get<LoadPLuginFunc>("loadPlugin");
+
+    IPlugin *plugin = loadPluginFunc(options.c_str(), sharedLib);
+    return IPluginHandler{plugin};
+}
 
 } // namespace hsim
 

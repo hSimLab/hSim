@@ -3,13 +3,14 @@
 
 #include <memory>
 #include <string>
+#include <utility>
 
 #include "config.hh"
 #include "cpu_state.hh"
 #include "elf_loader.hh"
 #include "executors.hh"
+#include "machine_event.hh"
 #include "memory.hh"
-#include "plugin_manager.hh"
 
 namespace hsim {
 
@@ -34,15 +35,16 @@ class Machine final {
         }
     }
 
-    void loadPlugin(const std::string &pluginPath,
-                    const std::string &options = "") {
-        m_plugins.loadPlugin(pluginPath, options);
+    void addEventConsumer(IEventConsumerHandle consumer) {
+        m_eventManager.attach(std::move(consumer));
     }
+
+    void notify() { m_eventManager.notify(); }
 
   private:
     std::unique_ptr<CpuState> m_state;
     Memory m_mem{};
-    PluginManager m_plugins;
+    EventManager m_eventManager;
 };
 
 } // namespace hsim

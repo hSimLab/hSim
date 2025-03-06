@@ -1,10 +1,13 @@
+#include <exception>
 #include <iostream>
-#include <stdexcept>
+#include <utility>
 //
 #include <CLI/CLI.hpp>
 
 #include "config.hh"
 #include "machine.hh"
+#include "plugin.hh"
+#include "so_loader.hh"
 
 int main(int argc, char **argv) try {
     CLI::App app("hSim: high Performance CPU Simulator");
@@ -30,9 +33,14 @@ int main(int argc, char **argv) try {
     //
     hsim::Machine machine{config};
 
-    // machine.loadPlugin("./build/plugins/libsimple_plugin.so");
-
     machine.run();
+
+    // hsim::SharedLib sharedLib{"./build/plugins/libsimple_plugin.so",
+    // hsim::kLazy};
+
+    // auto plugin = hsim::loadPluginFromSO(sharedLib, "vova");
+    // machine.addEventConsumer(std::move(plugin));
+    // machine.notify();
 
     return 0;
 } catch (const std::exception &e) {
