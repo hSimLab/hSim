@@ -3,7 +3,6 @@
 #include <utility>
 
 #include "plugin.hh"
-#include "so_loader.hh"
 
 class SimplePlugin : public hsim::IPlugin {
   public:
@@ -26,3 +25,5 @@ class SimplePlugin : public hsim::IPlugin {
 extern "C" hsim::IPlugin *loadPlugin(const char *options) {
     return new SimplePlugin{options};
 }
+
+extern "C" void unloadPlugin(SimplePlugin *plugin) { delete plugin; }
