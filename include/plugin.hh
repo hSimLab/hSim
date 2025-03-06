@@ -13,18 +13,19 @@
 
 namespace hsim {
 
-class IPlugin : public IEventConsumer {
-  public:
-    IPlugin(SharedLib so_lib) : m_sharedLib(std::move(so_lib)) {}
-    ~IPlugin() override = default;
-    SharedLib getSOLib() { return m_sharedLib; }
+using IPlugin = IEventConsumer;
 
-  private:
-    SharedLib m_sharedLib;
-};
+// class IPlugin : public IEventConsumer {
+//   public:
+//     IPlugin(SharedLib so_lib) : m_sharedLib(std::move(so_lib)) {}
+//     ~IPlugin() override = default;
+//     // SharedLib getSOLib() { return m_sharedLib; }
 
-using LoadPLuginFunc = hsim::IPlugin *(*)(const char *options,
-                                          SharedLib so_lib);
+//   private:
+//     // SharedLib m_sharedLib;
+// };
+
+using LoadPLuginFunc = hsim::IPlugin *(*)(const char *options);
 
 // using IPluginHandler = std::unique_ptr<IPlugin, void (*)(IPlugin*)>;
 // auto loadPluginFromSO(const std::filesystem::path& path, const std::string&
@@ -75,7 +76,7 @@ IPluginHandler loadPluginFromSO(SharedLib sharedLib,
                                 const std::string &options) {
     auto loadPluginFunc = sharedLib.get<LoadPLuginFunc>("loadPlugin");
 
-    IPlugin *plugin = loadPluginFunc(options.c_str(), sharedLib);
+    IPlugin *plugin = loadPluginFunc(options.c_str());
     return IPluginHandler{plugin};
 }
 

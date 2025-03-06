@@ -33,7 +33,7 @@ int main(int argc, char **argv) try {
     //
     hsim::Machine machine{config};
 
-    machine.run();
+    // machine.run();
 
     // hsim::SharedLib sharedLib{"./build/plugins/libsimple_plugin.so",
     // hsim::kLazy};

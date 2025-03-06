@@ -7,8 +7,7 @@
 
 class SimplePlugin : public hsim::IPlugin {
   public:
-    SimplePlugin(std::string name, hsim::SharedLib so_lib)
-        : IPlugin{std::move(so_lib)}, m_name{std::move(name)} {
+    SimplePlugin(std::string name) : m_name{std::move(name)} {
         std::cout << "SimplePlugin: " << m_name << std::endl;
     }
 
@@ -24,7 +23,6 @@ class SimplePlugin : public hsim::IPlugin {
     std::string m_name;
 };
 
-extern "C" hsim::IPlugin *loadPlugin(const char *options,
-                                     hsim::SharedLib so_lib) {
-    return new SimplePlugin{options, std::move(so_lib)};
+extern "C" hsim::IPlugin *loadPlugin(const char *options) {
+    return new SimplePlugin{options};
 }
