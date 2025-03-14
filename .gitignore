@@ -37,5 +37,3 @@ build/
 # IDEs and LSP specific
 .vscode/
 __pycache__/
-.cache/
-compile_commands.json

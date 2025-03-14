@@ -22,8 +22,8 @@ class SimplePlugin : public hsim::IPlugin {
     std::string m_name;
 };
 
-extern "C" hsim::IPlugin *loadPlugin(const char *options) {
+HSIM_LOAD_PLUGIN_FUNC(const std::string &options) {
     return new SimplePlugin{options};
 }
 
-extern "C" void unloadPlugin(SimplePlugin *plugin) { delete plugin; }
+HSIM_UNLOAD_PLUGIN_FUNC(SimplePlugin *plugin) { delete plugin; }

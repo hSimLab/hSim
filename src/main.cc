@@ -1,7 +1,6 @@
 #include <exception>
 #include <iostream>
 #include <memory>
-#include <utility>
 //
 #include <CLI/CLI.hpp>
 
@@ -36,9 +35,8 @@ int main(int argc, char **argv) try {
 
     machine.run();
 
-    // auto *plugin = new
-    // hsim::PluginConsumer{"./build/plugins/libsimple_plugin.so", "vova"};
-    // machine.addEventConsumer(std::unique_ptr<hsim::IEventConsumer>{plugin});
+    // machine.addEventConsumer(std::make_unique<hsim::PluginConsumer>(
+    //     "./build/plugins/libsimple_plugin.so", "vova"));
     // machine.notify();
 
     return 0;

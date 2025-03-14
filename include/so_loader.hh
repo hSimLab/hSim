@@ -6,6 +6,7 @@
 #include <memory>
 #include <stdexcept>
 #include <string>
+#include <type_traits>
 
 #include <dlfcn.h>
 
@@ -18,19 +19,25 @@ enum SharedLibMode : std::uint16_t {
     kLocal = RTLD_LOCAL,
 };
 
+template <typename T>
+concept PointerT = std::is_pointer_v<T>;
+
 class SharedLib {
+  private:
+    static void dlCloser(void *handle) {
+        if (handle != nullptr) {
+            dlclose(handle);
+        }
+    }
+
   public:
     SharedLib(const std::filesystem::path &libPath, SharedLibMode mode)
-        : m_handle{dlopen(libPath.c_str(), mode), [](void *handle) {
-                       if (handle != nullptr) {
-                           dlclose(handle);
-                       }
-                   }} {
+        : m_handle{dlopen(libPath.c_str(), mode), dlCloser} {
         if (m_handle == nullptr) {
             throw std::runtime_error{dlerror()};
         }
     }
-    template <typename T> T get(const std::string &symbol) {
+    template <PointerT T> T get(const std::string &symbol) {
         void *loadedSymbol = dlsym(m_handle.get(), symbol.c_str());
         if (loadedSymbol == nullptr) {
             throw std::runtime_error{dlerror()};
@@ -40,7 +47,7 @@ class SharedLib {
     }
 
   private:
-    std::shared_ptr<void> m_handle;
+    std::unique_ptr<void, decltype(&dlCloser)> m_handle;
 };
 
 } // namespace hsim
