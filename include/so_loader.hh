@@ -24,11 +24,13 @@ concept PointerT = std::is_pointer_v<T>;
 
 class SharedLib {
   private:
-    static void dlCloser(void *handle) { dlclose(handle); }
+    struct DlCloser {
+        void operator()(void *handle) { dlclose(handle); }
+    };
 
   public:
     SharedLib(const std::filesystem::path &libPath, SharedLibMode mode)
-        : m_handle{dlopen(libPath.c_str(), mode), dlCloser} {
+        : m_handle{dlopen(libPath.c_str(), mode)} {
         if (m_handle == nullptr) {
             throw std::runtime_error{dlerror()};
         }
@@ -43,7 +45,7 @@ class SharedLib {
     }
 
   private:
-    std::unique_ptr<void, decltype(&dlCloser)> m_handle;
+    std::unique_ptr<void, DlCloser> m_handle;
 };
 
 } // namespace hsim
