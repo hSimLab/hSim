@@ -1,4 +1,5 @@
 #include <exception>
+#include <filesystem>
 #include <iostream>
 #include <memory>
 //
@@ -35,9 +36,10 @@ int main(int argc, char **argv) try {
 
     machine.run();
 
-    // machine.addEventConsumer(std::make_unique<hsim::PluginConsumer>(
-    //     "./build/plugins/libsimple_plugin.so", "vova"));
-    // machine.notify();
+    // std::filesystem::path pluginPath = "./build/plugins/libsimple_plugin.so";
+    // machine.addEventConsumer(
+    //     std::make_unique<hsim::PluginConsumer>(pluginPath, "vova"));
+    // machine.notify<hsim::MemWrite>(0, 0);
 
     return 0;
 } catch (const std::exception &e) {

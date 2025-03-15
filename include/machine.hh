@@ -39,7 +39,9 @@ class Machine final {
         m_eventManager.attach(std::move(consumer));
     }
 
-    void notify() { m_eventManager.notify(); }
+    template <typename Event, typename... Args> void notify(Args &&...args) {
+        m_eventManager.notify<Event>(std::forward<Args>(args)...);
+    }
 
   private:
     std::unique_ptr<CpuState> m_state;

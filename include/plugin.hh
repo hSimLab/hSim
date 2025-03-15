@@ -9,13 +9,17 @@
 
 #include "machine_event.hh"
 #include "so_loader.hh"
+#include "support.hh"
 
 namespace hsim {
 
 class IPlugin {
   public:
     virtual ~IPlugin() = default;
-    virtual void update() = 0;
+    virtual void handle(MemRead event, Addr addr) = 0;
+    virtual void handle(MemWrite event, Addr addr, Word value) = 0;
+    virtual void handle(PreInsn event, Word insn) = 0;
+    virtual void handle(PostInsn event, Word insn) = 0;
 };
 
 using LoadPluginFunc = IPlugin *(*)(const std::string &options);
@@ -41,7 +45,18 @@ class PluginConsumer : public IEventConsumer {
                                                               unloadFunc);
     }
 
-    void update() override { m_plugin->update(); }
+    void handle(MemRead event, Addr addr) override {
+        m_plugin->handle(event, addr);
+    }
+    void handle(MemWrite event, Addr addr, Word value) override {
+        m_plugin->handle(event, addr, value);
+    }
+    void handle(PreInsn event, Word insn) override {
+        m_plugin->handle(event, insn);
+    }
+    void handle(PostInsn event, Word insn) override {
+        m_plugin->handle(event, insn);
+    }
 
   private:
     SharedLib m_sharedLib;

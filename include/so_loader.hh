@@ -24,11 +24,7 @@ concept PointerT = std::is_pointer_v<T>;
 
 class SharedLib {
   private:
-    static void dlCloser(void *handle) {
-        if (handle != nullptr) {
-            dlclose(handle);
-        }
-    }
+    static void dlCloser(void *handle) { dlclose(handle); }
 
   public:
     SharedLib(const std::filesystem::path &libPath, SharedLibMode mode)
