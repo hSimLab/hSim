@@ -18,9 +18,7 @@ int main(int argc, char **argv) try {
         ->required()
         ->check(CLI::ExistingFile);
 
-    app.add_option("--log", config.log_path, "Path to log file")
-        ->required()
-        ->check(CLI::ExistingFile);
+    app.add_option("--log", config.log_path, "Path to log file")->required();
 
     app.add_flag("--dump-exec", config.dump_exec,
                  "Option to enable dump of state on execution")

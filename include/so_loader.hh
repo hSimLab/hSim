@@ -46,6 +46,7 @@ class SharedLib {
 
   private:
     std::unique_ptr<void, DlCloser> m_handle;
+    static_assert(sizeof(m_handle) == sizeof(void *));
 };
 
 } // namespace hsim
