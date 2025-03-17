@@ -2,11 +2,14 @@
 #define HSIM_MACHINE_INCLUDED
 
 #include <memory>
+#include <string>
+#include <utility>
 
 #include "config.hh"
 #include "cpu_state.hh"
 #include "elf_loader.hh"
 #include "executors.hh"
+#include "machine_event.hh"
 #include "memory.hh"
 
 namespace hsim {
@@ -32,9 +35,18 @@ class Machine final {
         }
     }
 
+    void addEventConsumer(IEventConsumerHandle consumer) {
+        m_eventManager.attach(std::move(consumer));
+    }
+
+    template <typename Event, typename... Args> void notify(Args &&...args) {
+        m_eventManager.notify<Event>(std::forward<Args>(args)...);
+    }
+
   private:
     std::unique_ptr<CpuState> m_state;
     Memory m_mem{};
+    EventManager m_eventManager;
 };
 
 } // namespace hsim

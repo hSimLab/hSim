@@ -33,5 +33,7 @@
 
 # Directories
 build/
+
+# IDEs and LSP specific
 .vscode/
 __pycache__/

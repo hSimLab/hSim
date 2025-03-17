@@ -8,6 +8,7 @@ include(cmake/defaults.cmake)
 
 add_subdirectory(third_party)
 add_subdirectory(scripts)
+add_subdirectory(plugins)
 
 set(hSIM_LIB
     src/memory.cc src/machine.cc

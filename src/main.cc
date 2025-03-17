@@ -1,10 +1,14 @@
+#include <exception>
+#include <filesystem>
 #include <iostream>
-#include <stdexcept>
+#include <memory>
 //
 #include <CLI/CLI.hpp>
 
 #include "config.hh"
 #include "machine.hh"
+#include "machine_event.hh"
+#include "plugin.hh"
 
 int main(int argc, char **argv) try {
     CLI::App app("hSim: high Performance CPU Simulator");
@@ -14,9 +18,7 @@ int main(int argc, char **argv) try {
         ->required()
         ->check(CLI::ExistingFile);
 
-    app.add_option("--log", config.log_path, "Path to log file")
-        ->required()
-        ->check(CLI::ExistingFile);
+    app.add_option("--log", config.log_path, "Path to log file")->required();
 
     app.add_flag("--dump-exec", config.dump_exec,
                  "Option to enable dump of state on execution")
@@ -31,6 +33,11 @@ int main(int argc, char **argv) try {
     hsim::Machine machine{config};
 
     machine.run();
+
+    // std::filesystem::path pluginPath = "./build/plugins/libsimple_plugin.so";
+    // machine.addEventConsumer(
+    //     std::make_unique<hsim::PluginConsumer>(pluginPath, "vova"));
+    // machine.notify<hsim::MemWrite>(0, 0);
 
     return 0;
 } catch (const std::exception &e) {
