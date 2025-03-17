@@ -28,3 +28,6 @@ add_executable(${PROJECT_NAME} src/main.cc)
 target_compile_options(${PROJECT_NAME} PRIVATE -Wpedantic)
 target_link_libraries(${PROJECT_NAME} PRIVATE hSim-lib CLI11::CLI11 fmt::fmt)
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME hsim)
+
+enable_testing()
+add_subdirectory(test)
